@@ -1,11 +1,12 @@
 // 주제명 : 공 받기 게임
 // 학번 : 2025111753
 // 이름 : 전민재
-// [5주차] 다양한 충돌 조건 - 떨어지는 공과 받침의 충돌 판정
+// [6주차] 다양한 움직임 - 공마다 다른 속도, 점수가 오르면 전체 가속
 
-let ballX = 200;
-let ballY = 0;
-let ballSpeed = 3;
+let itemX = [100, 180, 260, 320, 60];
+let itemY = [-20, -120, -200, -300, -80];
+let itemSpeed = [3, 4, 2, 5, 3];
+let itemCount = 5;
 let r = 18;
 
 let catchX = 175;
@@ -14,6 +15,7 @@ let catchW = 50;
 let catchH = 18;
 
 let score = 0;
+let accel = 0;
 
 function setup() {
   createCanvas(400, 400);
@@ -30,19 +32,24 @@ function draw() {
   fill(color(200, 60, 60));
   rect(catchX, catchY, catchW, catchH);
 
-  ballY = ballY + ballSpeed;
-
-  if (ballX > catchX && ballX < catchX + catchW && ballY > catchY && ballY < catchY + catchH) {
-    score = score + 1;
-    ballY = 0;
-    ballX = random(r, width - r);
+  for (let i = 0; i < itemCount; i = i + 1) {
+    itemY[i] = itemY[i] + itemSpeed[i] + accel;
+    if (itemX[i] > catchX && itemX[i] < catchX + catchW && itemY[i] > catchY && itemY[i] < catchY + catchH) {
+      score = score + 1;
+      makeItem(i);
+    }
+    if (itemY[i] > height) {
+      makeItem(i);
+    }
+    noStroke();
+    fill(color(255, 80, 80));
+    ellipse(itemX[i], itemY[i], r * 2, r * 2);
   }
-  if (ballY > height) {
-    ballY = 0;
-    ballX = random(r, width - r);
-  }
 
-  noStroke();
-  fill(color(255, 80, 80));
-  ellipse(ballX, ballY, r * 2, r * 2);
+  accel = score * 0.1;
+}
+
+function makeItem(i) {
+  itemX[i] = random(r, width - r);
+  itemY[i] = random(-200, -r);
 }
